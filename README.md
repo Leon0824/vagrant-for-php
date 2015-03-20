@@ -1,0 +1,5 @@
+#Usage
+
+```
+# vagrant up
+```
