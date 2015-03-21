@@ -42,7 +42,8 @@ Vagrant.configure(2) do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "./www-root", "/data", owner: "www-data", group: "www-data"
-  # config.vm.synced_folder "./www-root", "/data", type: "rsync", rsync__auto, ""
+  config.vm.synced_folder "./mysql", "/var/lib/mysql", owner: "mysql", group: "mysql",mount_options: ["dmode=771,fmode=664"]
+  config.vm.synced_folder "./logs/mysql", "/vagrant/logs/mysql", owner: "mysql", group: "mysql"
   Find.find("./www-root") do |filename|
     next if filename == './www-root' or not File.directory?(filename)
 
