@@ -19,6 +19,14 @@
 
 php include path包含 `./php-libs/` 目录
 
+## logs
+
+`./logs/` 
+
+## privision
+
+`vagrant provision` 可以重启 nginx 与 php5-fpm
+
 
 
 
