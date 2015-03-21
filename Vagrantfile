@@ -86,7 +86,4 @@ Vagrant.configure(2) do |config|
   # SHELL
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
   config.vm.provision "shell", inline: "/root/scripts/init.sh",run: "always"
-  config.vm.provider "virtualbox" do |v|
-    v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
-  end
 end
