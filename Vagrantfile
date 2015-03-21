@@ -5,6 +5,9 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+
+require  'find'
+
 Vagrant.configure(2) do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -38,7 +41,19 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "./www-root", "/data", owner:"www-data"
+  # config.vm.synced_folder "./www-root", "/data", owner: "www-data", group: "www-data"
+  # config.vm.synced_folder "./www-root", "/data", type: "rsync", rsync__auto, ""
+  Find.find("./www-root") do |filename|
+    next if filename == './www-root' or not File.directory?(filename)
+
+    basename = File.basename filename
+    if File.lstat(filename).symlink? 
+      config.vm.synced_folder File.readlink(filename), "/data/"+basename, owner: "www-data", group: "www-data"
+      next
+    end
+    config.vm.synced_folder filename, "/data/"+basename, owner: "www-data", group: "www-data"
+  end
+  
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -70,4 +85,7 @@ Vagrant.configure(2) do |config|
   # SHELL
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
   config.vm.provision "shell", inline: "/root/scripts/init.sh",run: "always"
+  config.vm.provider "virtualbox" do |v|
+    v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+  end
 end
